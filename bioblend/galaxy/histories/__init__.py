@@ -37,6 +37,42 @@ class HistoryClient(Client):
             payload['name'] = name
         return self._post(payload)
 
+    def import_history(self, file_path=None, url=None):
+        """
+        Import a history from an archive on disk or a URL.
+
+        :type file_path: str
+        :param file_path: Path to exported history archive on disk.
+        :type url: str
+        :param url: URL for an exported history archive
+        """
+        if file_path:
+            archive_file = attach_file(file_path)
+            payload = dict(archive_source='', archive_file=archive_file, archive_type="file")
+        else:
+            payload = dict(archive_source=url, archive_type='url')
+
+        return self._post(payload=payload, files_attached=file_path is not None)
+
+    def upload_history_from_url(self, url=None, token_name=None, token_key=None):
+        """
+        Upload a history from a URL that requires security credentials to be added to the request headers.
+
+        :type url: str
+        :param url: URL for an exported history archive
+        :type token_name: str
+        :param token_name: Name of security credential to be added to the headers
+        :type token_key: str
+        :param token_key: Security key that will be added to the headers
+        """
+        print("archive_source "+url)
+        print("archive_type url")
+        print("token_name "+token_name)
+        print("token_key "+token_key)
+        payload = dict(archive_source=url, archive_type='url', token_name=token_name, token_key=token_key)
+
+        return self._post(payload=payload, files_attached=False)
+
     def get_histories(self, history_id=None, name=None, deleted=False):
         """
         Get all histories or filter the specific one(s) via the provided
