@@ -55,6 +55,21 @@ class HistoryClient(Client):
 
         return self._post(payload=payload, files_attached=file_path is not None)
 
+    def upload_history_from_url(self, url=None, token_name=None, token_key=None):
+        """
+        Upload a history from a URL that requires security credentials to be added to the request headers.
+
+        :type url: str
+        :param url: URL for an exported history archive
+        :type token_name: str
+        :param token_name: Name of security credential to be added to the headers
+        :type token_key: str
+        :param token_key: Security key that will be added to the headers
+        """
+        payload = dict(archive_source=url, archive_type='url', token_name=token_name, token_key=token_key)
+
+        return self._post(payload=payload, files_attached=False)
+
     def _get_histories(self, history_id=None, name=None, deleted=False, filter_user_published=None, get_all_published=False, slug=None):
         """
         Hidden method to be used by both get_histories() and get_published_histories()
